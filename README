@@ -1,0 +1,5 @@
+Server 
+  npm init -y
+  npm i express nodemon dotenv mongoose
+  create routes 
+  connect DB =- https://www.mongodb.com/cloud/atlas
