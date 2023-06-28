@@ -3,3 +3,5 @@ Server
   npm i express nodemon dotenv mongoose
   create routes 
   connect DB =- https://www.mongodb.com/cloud/atlas
+   npm i cookie-pars - to be able to use cookie
+   npm i jsonwebtoken - to be able to use jwt
