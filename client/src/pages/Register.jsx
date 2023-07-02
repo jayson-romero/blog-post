@@ -2,30 +2,71 @@ import { Link, useNavigate } from "react-router-dom"
 import {useContext, useState } from "react"
 import { AuthContext } from "../context/AuthContext" 
 import { toast } from 'react-toastify';
+import FormInput from "../components/FormInput";
 
 const Register = () => {
   const { register} = useContext(AuthContext)
   const navigate = useNavigate();
 
-  const [ inputs, setInputs] = useState({
+  const [ values, setValues] = useState({
     name: "",
     email: "",
-    password: ""
+    password: "",
+    confirmPassword:"",
   })
-  const [ confirmPassword, setconfirmPassword] = useState('')
+
+  const inputs = [
+    { 
+      id: 1,
+      type: "text",
+      name: "name",
+      label: "Name",
+      pattern: "^[a-zA-Z ]*$",
+      errorMessage: "Name shouldn't include any spcial characters.",
+      required: true
+    },
+    { 
+      id: 2,
+      name: "email",
+      label: "Email address",
+      type: "email",
+      errorMessage: "It should be a valid email address.",
+      required: true
+
+    },
+    { 
+      id: 3,
+      name: "password",
+      label: "Password",
+      type: "password",
+      errorMessage: "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character.",
+      required: true
+
+    },
+    { 
+      id: 4,
+      name: "confirmPassword",
+      label: "Confirm Password",
+      pattern: values.password,
+      type: "password",
+      errorMessage: "Password don't match.",
+      required: true
+    },
+  ]
+
 
   const handleChange = (e) => {
-    setInputs(prev => ({...prev, [e.target.name]:e.target.value}))
+    setValues({...values, [e.target.name]:e.target.value})
   }
 
   const handleClick = async (e) => {
     e.preventDefault()
     try {
-      if ( inputs.password !== confirmPassword) {
+      if ( values.password !== values.confirmPassword) {
         toast.error('Passwords do not match');
       } else {
         try {
-          const response = await register(inputs)
+          const response = await register(values)
           if(response) {
             toast.success("Registered")
             navigate("/")
@@ -58,79 +99,20 @@ const Register = () => {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" action="#" method="POST">
           <div>
-              <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
-                Name
-              </label>
-              <div className="mt-2">
-                <input
-                  id="name"
-                  name="name"
-                  type="name"
-                  autoComplete="name"
-                  onChange={handleChange}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            {
+              inputs.map((input)=> (
+                <FormInput 
+                key={input.id} 
+                {...input}
+                value={values[input.name]}
+                handleChange={handleChange}
+                errorMessage={input.errorMessage}
                 />
-              </div>
-            </div>
+              ))
+            }
+          </div>
             
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  onChange={handleChange}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                  Password
-                </label>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  onChange={handleChange}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="confirmpPassword" className="block text-sm font-medium leading-6 text-gray-900">
-                  Confirm Password
-                </label>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="confirmpPassword"
-                  name="confirmpPassword"
-                  type="password"
-                  autoComplete="current-confirmpPassword"
-                  onChange={(e) => setconfirmPassword(e.target.value)}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div>
+          <div>
               <button
                 onClick={handleClick}
                 type="submit"
