@@ -13,15 +13,19 @@ export const notFound = (req, res, next) => {
  
 
  export const errorHandler = (err, req, res, next) => {
-  const status = res.statusCode === 200 ? 400 : res.statusCode;
-  const message = err.message || "something went wrong!"
-
+  let status = res.status === 200 ? 400 : res.status;
+  let message = err.message || "something went wrong!"
+    
   //  If Mongoose not found error, set to 404 and change message
    if (err.name === 'CastError' && err.kind === 'ObjectId') {
-     statusCode = 404;
+     status = 404;
      message = 'Resource not found';
    }
 
+   if (err.code === 11000) {
+     status = 409
+     message = 'Duplicate Resource'
+   }
   return res.status(status).json({
      success: false,  
      status,
@@ -29,9 +33,6 @@ export const notFound = (req, res, next) => {
      stack: process.env.NODE_ENV === 'production' ? null : err.stack,
   })
 };
- 
-
-
 
 //  const errorHandler = (err, req, res, next) => {
 //    let statusCode = res.statusCode === 200 ? 500 : res.statusCode;

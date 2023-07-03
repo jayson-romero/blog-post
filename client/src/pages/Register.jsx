@@ -8,6 +8,7 @@ const Register = () => {
   const { register} = useContext(AuthContext)
   const navigate = useNavigate();
 
+
   const [ values, setValues] = useState({
     name: "",
     email: "",
@@ -39,6 +40,7 @@ const Register = () => {
       name: "password",
       label: "Password",
       type: "password",
+      pattern: "(?=[A-Za-z0-9@#$%^&+!=]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+!=])(?=.{8}).*$",
       errorMessage: "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character.",
       required: true
 
@@ -61,24 +63,19 @@ const Register = () => {
 
   const handleClick = async (e) => {
     e.preventDefault()
-    try {
-      if ( values.password !== values.confirmPassword) {
-        toast.error('Passwords do not match');
-      } else {
-        try {
+    try {   
           const response = await register(values)
-          if(response) {
+          if (response?.response?.data?.message === "Duplicate Resource") {
+            toast.error("Email address already registered")
+          }
+    
+          if (response?.status === 200) {
             toast.success("Registered")
             navigate("/")
-          } else {
-            toast.error("something went wrong with authentication")
-          }
-        } catch (error) {
-          toast.error(error?.data?.message || error.error);
-        }
-      }    
+          } 
+
     } catch (error) {
-      console.log(error)
+     alert(error)
     } 
   }
 
@@ -97,7 +94,7 @@ const Register = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" onSubmit={handleClick}>
           <div>
             {
               inputs.map((input)=> (
@@ -114,8 +111,8 @@ const Register = () => {
             
           <div>
               <button
-                onClick={handleClick}
-                type="submit"
+                // onClick={handleClick}
+                // type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Register

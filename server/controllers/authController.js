@@ -1,7 +1,7 @@
 import User from '../models/userModels.js';
 import bcrypt from 'bcrypt';
 import { createError } from '../middleware/errorMiddleware.js';
-import jwt from 'jsonwebtoken';
+import generateToken from '../utils/generateToken.js';
 
 const register = async (req, res, next) => {
    try {
@@ -9,10 +9,18 @@ const register = async (req, res, next) => {
       const hash = bcrypt.hashSync(req.body.password, salt);
       const newUser = new User({...req.body, password: hash});
 
-      await newUser.save();
-      res.status(200).send("User has been created")
+      const response = await newUser.save();
+      const { password, _id,  ...others} = newUser._doc
+      if(response) {
+         generateToken(res, newUser._id)
+         return res.status(200).json(others)
+      } else {
+         next(createError(400, 'Invalid user data'))
+      }
+    
    } catch (err) {
       next(err)
+
    }
 }
 
@@ -25,15 +33,12 @@ const login = async (req, res, next) => {
       const isCorrect = await bcrypt.compare(req.body.password, user.password)
       if(!isCorrect) return next(createError(400, 'Wrong password'))
 
-      const { password, ...others} = user._doc;
+      const { password, _id, ...others} = user._doc;
 
-      const token = jwt.sign({id:user._id}, process.env.JWT_SECRET)
-      res.cookie('jwt', token, {
-         httpOnly: true,
-         secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
-         sameSite: 'strict', // Prevent CSRF attacks
-         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-       }).status(200).json(others)
+      generateToken(res, user._id)
+      res.status(200).json(others)
+    
+       
    } catch (err) {
       next(err)
    }

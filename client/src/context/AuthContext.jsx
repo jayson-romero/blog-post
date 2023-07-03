@@ -1,4 +1,5 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
+import { TokenContext } from "./TokenContext";
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:5000/api/auth';
@@ -6,14 +7,18 @@ const BASE_URL = 'http://localhost:5000/api/auth';
 const AuthContext = createContext();
 
 const AuthContextProvider = ({children}) => {
+   
+   const {saveToken, removeToken} = useContext(TokenContext)
 
+   // console.log(token)
    //HANLDE REGISTRATION
    const register = async(userData) => {
       try {
          const response = await axios.post(`${BASE_URL}/register`, userData);
-         return response;
+         saveToken(response.data)
+         return response; 
       } catch (error) {
-         console.log(error.response.data)
+         return error
       }
    }
    //HANDLE LOGIN
