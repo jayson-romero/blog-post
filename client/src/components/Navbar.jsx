@@ -1,6 +1,13 @@
-import { Fragment } from 'react'
+import { Fragment, useContext } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import {BiLogIn} from 'react-icons/bi'
+import { Link } from 'react-router-dom'
+
+import {TokenContext} from '../context/TokenContext.jsx'
+import { AuthContext } from '../context/AuthContext.jsx'
+
+
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -15,6 +22,21 @@ function classNames(...classes) {
 
 
 const Navbar = () => {
+
+    const { token , removeToken} = useContext(TokenContext)
+    const {logout} = useContext(AuthContext)
+
+    const handleClick = () => {
+     try {
+      logout()
+      removeToken()
+      toast
+     } catch (error) {
+       
+     }
+      
+    }
+
   return (
     <>
       <Disclosure as="nav" className="bg-gray-800">
@@ -67,13 +89,21 @@ const Navbar = () => {
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <button
                   type="button"
-                  className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 "
                 >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
+                  
+                  <span className="text-gray-300 hover:text-white">
+                    {token ? token.name 
+                    : 
+                    <Link to="/login" className='flex items-center gap-2'>
+                      <BiLogIn className='text-[20px]'/>
+                      <p>Sign-in</p></Link>}
+
+                  </span>
                 </button>
 
                 {/* Profile dropdown */}
+                { token && 
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
@@ -85,6 +115,7 @@ const Navbar = () => {
                       />
                     </Menu.Button>
                   </div>
+               
                   <Transition
                     as={Fragment}
                     enter="transition ease-out duration-100"
@@ -94,7 +125,9 @@ const Navbar = () => {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
+                
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    
                       <Menu.Item>
                         {({ active }) => (
                           <a
@@ -115,19 +148,26 @@ const Navbar = () => {
                           </a>
                         )}
                       </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                          >
-                            Sign out
-                          </a>
-                        )}
-                      </Menu.Item>
+                     
+                         <Menu.Item>
+                         {({ active }) => (
+                           <Link
+                             to = '/login'
+                             onClick={handleClick}
+                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                           >
+                             Sign out
+                           </Link>
+                         )}
+                       </Menu.Item>
+                 
+                     
+
                     </Menu.Items>
+                 
                   </Transition>
                 </Menu>
+                  }
               </div>
             </div>
           </div>

@@ -1,6 +1,58 @@
-import {Link} from 'react-router-dom'
+import { Link, useNavigate } from "react-router-dom"
+import {useContext, useState } from "react"
+import { AuthContext } from "../context/AuthContext" 
+import { toast } from 'react-toastify';
+import FormInput from "../components/FormInput";
 
 const Login = () => {
+
+  const { login} = useContext(AuthContext)
+  const navigate = useNavigate();
+
+  const [ values, setValues] = useState({
+    email: "",
+    password: "",
+  })
+
+ const handleChange = (e) => {
+  setValues({...values, [e.target.name]:e.target.value})
+ }
+
+ const handleSubmit = async (e) => {
+   e.preventDefault()
+   try {
+    const response =  await login(values)
+    console.log(response)
+     toast.success("Sign In successfully")
+     navigate("/")
+   } catch (error) {
+     console.log(error)
+   }
+ }
+
+ console.log(values)
+
+  const inputs = [
+    { 
+      id: 1,
+      name: "email",
+      label: "Email address",
+      type: "email",
+      errorMessage: "It should be a valid email address.",
+      required: true
+
+    },
+    { 
+      id: 2,
+      name: "password",
+      label: "Password",
+      type: "password",
+      pattern: "(?=[A-Za-z0-9@#$%^&+!=]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+!=])(?=.{8}).*$",
+      errorMessage: "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character.",
+      required: true
+
+    }]
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -16,7 +68,7 @@ const Login = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
@@ -27,6 +79,7 @@ const Login = () => {
                   name="email"
                   type="email"
                   autoComplete="email"
+                  onChange={handleChange}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -50,6 +103,7 @@ const Login = () => {
                   name="password"
                   type="password"
                   autoComplete="current-password"
+                  onChange={handleChange}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />

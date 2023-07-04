@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect  } from "react";
+
 
 const TokenContext = createContext();
 
@@ -32,7 +33,7 @@ const TokenContextProvider = ({children}) => {
 
 
    return (
-      <TokenContext.Provider value={{saveToken, removeToken}}>
+      <TokenContext.Provider value={{saveToken, removeToken, token}}>
          {children}
       </TokenContext.Provider>
    )

@@ -26,21 +26,34 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
    try {
-      // const { name, password } = req.body;
-      const user = await User.findOne({name:req.body.name})
-      if(!user) return next(createError(404, 'User not found'))
+      const { email, password } = req.body;
+      const user = await User.findOne({email})
 
-      const isCorrect = await bcrypt.compare(req.body.password, user.password)
-      if(!isCorrect) return next(createError(400, 'Wrong password'))
-
-      const { password, _id, ...others} = user._doc;
-
-      generateToken(res, user._id)
-      res.status(200).json(others)
+      if (user && await bcrypt.compare(password, user.password))  {
+         generateToken(res, user._id)
+         const { password, _id, ...others} = user._doc;
+         res.status(200).send(others)
+      }  else {
+      
+         next(createError(401, 'Invalid email or password'))
+     
+      }
+      // if (user && await bcrypt.compare(password, user.password)){
+      //    generateToken(res, user._id)
+      //    const { password, _id, ...others} = user._doc;
+      //    res.status(200).json(others)
+      // }
+      // else {
+      //    res.status(401);
+      //    
+      // }
     
-       
    } catch (err) {
-      next(err)
+      console.log(err)
+      // throw new Error(err)
+      // res.status(401);
+
+      // throw new Error('Invalid email or password');
    }
 }
  

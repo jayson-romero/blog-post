@@ -1,38 +1,65 @@
-export const createError = (status, message) => {
+
+
+
+
+
+
+
+export const createError = function (status, message ) {
   const err = new Error()
-  err.status = status
+  err.success = false,
+  err.status = status,
   err.message = message
   return err
 }
 
 export const notFound = (req, res, next) => {
-   const error = new Error(`Not Found - ${req.originalUrl}`);
-   res.status(404);
-   next(error)
- };
- 
+  const err = new Error(`Not Found - ${req.originalUrl}`);
+  err.success = false,
+  err.status = 404,
+  next(err)
+};
 
- export const errorHandler = (err, req, res, next) => {
-  let status = res.status === 200 ? 400 : res.status;
-  let message = err.message || "something went wrong!"
+
+export const errorHandler = (err, req, res, next) => {
+  res.json({
+    err: err.status,
+    message: err.message,
+    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+  })
+}
+// export const myLogger = (status, message) => {
+
+// }
+
+
+
+// export const errorHandler = (err, req, res, next) => {
+
+  // err.send("middleware is working")
+  // next()
+  // let statusCode = err.code  === 200 ? 400 : err.code ;
+  // let message = err.message || "something went wrong!"
     
   //  If Mongoose not found error, set to 404 and change message
-   if (err.name === 'CastError' && err.kind === 'ObjectId') {
-     status = 404;
-     message = 'Resource not found';
-   }
+  //  if (err.name === 'CastError' && err.kind === 'ObjectId') {
+  //   statusCode = 404;
+  //    message = 'Resource not found';
+  //  }
 
-   if (err.code === 11000) {
-     status = 409
-     message = 'Duplicate Resource'
-   }
-  return res.status(status).json({
-     success: false,  
-     status,
-     message,
-     stack: process.env.NODE_ENV === 'production' ? null : err.stack,
-  })
-};
+  //  if (err.code === 11000) {
+  //   statusCode = 409
+  //    message = 'Duplicate Resource'
+  //  }
+  // res.status(statusCode).json({
+  //    success: false,  
+  //    statusCode,
+  //    message,
+  //    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+  // })
+// };
+
+ 
 
 //  const errorHandler = (err, req, res, next) => {
 //    let statusCode = res.statusCode === 200 ? 500 : res.statusCode;

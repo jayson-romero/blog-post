@@ -10,7 +10,6 @@ const AuthContextProvider = ({children}) => {
    
    const {saveToken, removeToken} = useContext(TokenContext)
 
-   // console.log(token)
    //HANLDE REGISTRATION
    const register = async(userData) => {
       try {
@@ -22,12 +21,30 @@ const AuthContextProvider = ({children}) => {
       }
    }
    //HANDLE LOGIN
-   //HANDLE LOGOUT
+   const login = async(userData) => {
+      try {
+           const response = await axios.post(`${BASE_URL}/login`, userData)
+           return  response.data
+      } catch (error) {
+         return error
+      }
+   }
 
+
+   //HANDLE LOGOUT
+   const logout = async () => {
+      try {
+         await axios.post(`${BASE_URL}/logout`);
+         removeToken()
+      } catch (error) {
+         return error
+      }
+
+   }
 
 
    return (
-      <AuthContext.Provider value={{register}}>
+      <AuthContext.Provider value={{register, logout, login}}>
          {children}
       </AuthContext.Provider>
    )
