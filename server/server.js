@@ -4,6 +4,7 @@ dotenv.config();
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import connectDB from './config/connectDB.js';
 import {createError, errorHandler, notFound } from './middleware/errorMiddleware.js'
 // notFound,
@@ -14,6 +15,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(cors())
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 
 app.use(notFound)

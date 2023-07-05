@@ -65,15 +65,14 @@ const Register = () => {
     e.preventDefault()
     try {   
           const response = await register(values)
-          if (response?.response?.data?.message === "Duplicate Resource") {
+      
+          if (response.data.message === "Duplicate Resource") {
             toast.error("Email address already registered")
           }
-    
-          if (response?.status === 200) {
+          else {
             toast.success("Registered")
             navigate("/")
-          } 
-
+          }
     } catch (error) {
      alert(error)
     } 

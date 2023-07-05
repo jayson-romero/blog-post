@@ -1,13 +1,15 @@
 import { useState } from "react"
 
 const FormInput = (props) => {
-   const [ focused, setFocused] = useState(false)
-   const { label, handleChange, errorMessage, ...inputProps } =  props
 
+   const { label, handleChange, errorMessage, token, ...inputProps } =  props
+
+   const [ focused, setFocused] = useState(false)
    const handleFocus = (e) => {
       setFocused(true)
    };
 
+   
   return (
     <>
       <label className="block text-sm font-medium leading-6 text-gray-900 mt-3">

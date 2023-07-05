@@ -1,12 +1,15 @@
 import { Link, useNavigate } from "react-router-dom"
 import {useContext, useState } from "react"
 import { AuthContext } from "../context/AuthContext" 
+import { TokenContext } from "../context/TokenContext";
 import { toast } from 'react-toastify';
-import FormInput from "../components/FormInput";
+
 
 const Login = () => {
 
   const { login} = useContext(AuthContext)
+  const { saveToken} = useContext(TokenContext)
+
   const navigate = useNavigate();
 
   const [ values, setValues] = useState({
@@ -22,37 +25,22 @@ const Login = () => {
    e.preventDefault()
    try {
     const response =  await login(values)
-    console.log(response)
-     toast.success("Sign In successfully")
-     navigate("/")
+     if (response.success === false) {
+        toast.error(response.message)
+     } else {
+      saveToken(response)
+      toast.success("Sign In successfully")
+       navigate("/")
+     }
+ 
+     
    } catch (error) {
-     console.log(error)
+     alert(error)
    }
  }
 
- console.log(values)
 
-  const inputs = [
-    { 
-      id: 1,
-      name: "email",
-      label: "Email address",
-      type: "email",
-      errorMessage: "It should be a valid email address.",
-      required: true
-
-    },
-    { 
-      id: 2,
-      name: "password",
-      label: "Password",
-      type: "password",
-      pattern: "(?=[A-Za-z0-9@#$%^&+!=]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+!=])(?=.{8}).*$",
-      errorMessage: "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character.",
-      required: true
-
-    }]
-
+  
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -70,6 +58,7 @@ const Login = () => {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
+              
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
               </label>
@@ -87,16 +76,10 @@ const Login = () => {
             </div>
 
             <div>
-              <div className="flex items-center justify-between">
                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                   Password
                 </label>
-                {/* <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                    Forgot password?
-                  </a>
-                </div> */}
-              </div>
+          
               <div className="mt-2">
                 <input
                   id="password"

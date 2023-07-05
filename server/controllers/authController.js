@@ -10,7 +10,7 @@ const register = async (req, res, next) => {
       const newUser = new User({...req.body, password: hash});
 
       const response = await newUser.save();
-      const { password, _id,  ...others} = newUser._doc
+      const { password,  ...others} = newUser._doc
       if(response) {
          generateToken(res, newUser._id)
          return res.status(200).json(others)
@@ -25,31 +25,23 @@ const register = async (req, res, next) => {
 }
 
 const login = async (req, res, next) => {
+
    try {
       const { email, password } = req.body;
+     
+    
       const user = await User.findOne({email})
 
       if (user && await bcrypt.compare(password, user.password))  {
          generateToken(res, user._id)
-         const { password, _id, ...others} = user._doc;
+         const { password, ...others} = user._doc;
          res.status(200).send(others)
       }  else {
-      
          next(createError(401, 'Invalid email or password'))
-     
       }
-      // if (user && await bcrypt.compare(password, user.password)){
-      //    generateToken(res, user._id)
-      //    const { password, _id, ...others} = user._doc;
-      //    res.status(200).json(others)
-      // }
-      // else {
-      //    res.status(401);
-      //    
-      // }
     
    } catch (err) {
-      console.log(err)
+      next(err)
       // throw new Error(err)
       // res.status(401);
 

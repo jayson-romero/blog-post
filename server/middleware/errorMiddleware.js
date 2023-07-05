@@ -22,8 +22,16 @@ export const notFound = (req, res, next) => {
 
 
 export const errorHandler = (err, req, res, next) => {
+
+    if (err.code === 11000) {
+      err.success = false,
+      err.status = 409,
+      err.message = 'Duplicate Resource'
+   }
+
   res.json({
-    err: err.status,
+    success: err.success,
+    status: err.status,
     message: err.message,
     stack: process.env.NODE_ENV === 'production' ? null : err.stack,
   })
