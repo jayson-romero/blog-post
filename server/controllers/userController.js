@@ -1,34 +1,61 @@
 import User from '../models/userModels.js'
+import bcrypt from 'bcrypt'
 
 
-const viewUser = async (req, res, next) => {   
+const updateUser = async (req, res, next) => {   
   try {
-   
-     const {userId} = req.params
-      const user = await User.findById(userId)   
-      res.status(200).send(user)
+    const {userId} = req.params
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(req.body.password, salt);
+    const UpdateUser = await User.findByIdAndUpdate(userId,
 
-  } catch (error) {
-    next(error)
+      // { $set: req.body}, 
+      { password: hash, 
+               name: req.body.name,
+               email: req.body.email }, 
+      { new: true }
+      
+      )
+    res.status(200).json(UpdateUser)  
+  } catch (err) {
+    next(err)
   }
    
 }
 
-const viewUsers = async (req, res, next) => {
-   
-
-
-}
-
-
-const updateUser = async (req, res, next) => {
-
-
-}
-
 const deleteUser = async (req, res, next) => {
+   try {
+      const {userId} = req.params
+      await User.findByIdAndDelete(userId)
+      res.status(200).json("user has been deleted")
+   } catch(err){
+     next(err)
+   }
+
 
 }
 
 
-export {viewUser, viewUsers, updateUser, deleteUser}
+const getUser = async (req, res, next) => {
+  try {
+    const {userId} = req.params
+     const user = await User.findById(userId)   
+     res.status(200).send(user)
+
+ } catch (err) {
+   next(err)
+ }
+
+}
+
+const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+export {getUser, getUsers, updateUser, deleteUser}

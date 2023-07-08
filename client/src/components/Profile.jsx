@@ -1,13 +1,17 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import FormInput from "./FormInput"
 import { TokenContext} from '../context/TokenContext'
 import { UserContext } from "../context/UserContext"
-
+import useFecth from "../hooks/useFetch.js"
 
 
 const Profile = () => {
    const { token } = useContext(TokenContext);
-   const { viewUser } = useContext(UserContext);
+   const { getUser } = useContext(UserContext);
+    
+
+
+  
 
    const [ values, setValues] = useState({
       name: token.name,
@@ -63,7 +67,11 @@ const inputs = [
  }
 
  const handleClick = async (e) => {
-  
+    try {
+      await getUser(token._id)
+    } catch (error) {
+      
+    }
  }
 
 

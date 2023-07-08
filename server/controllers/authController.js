@@ -2,6 +2,7 @@ import User from '../models/userModels.js';
 import bcrypt from 'bcrypt';
 import { createError } from '../middleware/errorMiddleware.js';
 import generateToken from '../utils/generateToken.js';
+import jwt from 'jsonwebtoken'
 
 const register = async (req, res, next) => {
    try {
@@ -12,7 +13,7 @@ const register = async (req, res, next) => {
       const response = await newUser.save();
       const { password,  ...others} = newUser._doc
       if(response) {
-         generateToken(res, newUser._id)
+         // generateToken(res, newUser._id)
          return res.status(200).json(others)
       } else {
          next(createError(400, 'Invalid user data'))
@@ -28,18 +29,19 @@ const login = async (req, res, next) => {
 
    try {
       const { email, password } = req.body;
-     
+      
     
       const user = await User.findOne({email})
-
+     
       if (user && await bcrypt.compare(password, user.password))  {
-         generateToken(res, user._id)
-         const { password, ...others} = user._doc;
-         res.status(200).send(others)
+         const { password, _id, ...others} = user._doc;
+         generateToken( res, _id)
+         res.status(200).json(others)
       }  else {
          next(createError(401, 'Invalid email or password'))
       }
-    
+
+ 
    } catch (err) {
       next(err)
       // throw new Error(err)
