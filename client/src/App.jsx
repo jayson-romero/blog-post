@@ -8,7 +8,9 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import NotFound from './pages/NotFound'
-import Profile from './components/Profile';
+// import Profile from './components/Profile';
+import PostList from './components/PostList';
+import PostDetail from './components/PostDetail';
 
 
 function App() {
@@ -16,7 +18,12 @@ function App() {
     createRoutesFromElements(
       <>
         <Route path='/' element={<Home/>}>
-        <Route path='/profile' element={<Profile/>}/>
+        <Route path='/' element={<PostList/>}/>
+        <Route path='/post/:postId' 
+        action={({ params }) => {
+          params.postId;
+        }}
+        element={<PostDetail/>}/>
         </Route>
         <Route path='/login' element={<Login/>}/>
         <Route path='/register' element={<Register/>}/>

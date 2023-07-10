@@ -1,27 +1,27 @@
 import express from 'express';
 import { getUsers, getUser, updateUser, deleteUser } from '../controllers/userController.js'
-import {verifyToken, verifyUser} from '../middleware/authMiddleware.js'
+import { verifyUser} from '../middleware/authMiddleware.js'
 const router = express.Router()
 
-router.get('/checkauthentication', verifyToken, (req, res, next) => {
+// router.get('/checkauthentication', verifyToken, (req, res, next) => {
    // res.send("Hello user, you are authenticated")
-   res.send(req.user)
-})
+//    res.send(req.user)
+// })
 
-router.get("/checkauser/:id", verifyUser, (req, res, next) => {
-   res.send("Hello user, you are authenticated")
-   // res.send(req.user)
-})
+// router.get("/checkauser/:id", verifyUser, (req, res, next) => {
+  
+//     res.send("Hello user, you are authenticated")
+// })
 
 
 //update user
-router.put('/:userId', updateUser)
+router.put('/:userId',verifyUser, updateUser)
 
 //delete user
-router.delete('/:userId', deleteUser)
+router.delete('/:userId', verifyUser,  deleteUser)
 
 //get user
-router.get('/:userId', verifyToken, getUser)
+router.get('/:userId', verifyUser,  getUser)
 
 //get all users
 router.get('/', getUsers)

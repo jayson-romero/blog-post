@@ -8,15 +8,14 @@ const updateUser = async (req, res, next) => {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
     const UpdateUser = await User.findByIdAndUpdate(userId,
-
-      // { $set: req.body}, 
       { password: hash, 
-               name: req.body.name,
-               email: req.body.email }, 
+        name: req.body.name,
+        email: req.body.email }, 
       { new: true }
-      
       )
-    res.status(200).json(UpdateUser)  
+
+
+    res.status(200).json("user has been updated")  
   } catch (err) {
     next(err)
   }

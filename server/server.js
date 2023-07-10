@@ -5,6 +5,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import blogRoutes from './routes/blogRoutes.js';
 import connectDB from './config/connectDB.js';
 import {createError, errorHandler, notFound } from './middleware/errorMiddleware.js'
 // notFound,
@@ -19,6 +20,8 @@ app.use(cors())
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/blog", blogRoutes);
+
 
 
 app.use(notFound)
