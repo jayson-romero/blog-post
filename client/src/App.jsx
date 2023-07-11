@@ -18,7 +18,7 @@ function App() {
     createRoutesFromElements(
       <>
         <Route path='/' element={<Home/>}>
-        <Route path='/' element={<PostList/>}/>
+        <Route path='/' element={<PostList />}/>
         <Route path='/post/:postId' 
         action={({ params }) => {
           params.postId;

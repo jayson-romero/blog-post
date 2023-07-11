@@ -5,16 +5,16 @@ const router = express.Router()
 
 
 //add  blog
-router.post('/:userId', addblog)
+router.post('/', addblog)
 
 //update blog
-router.put('/:userId',verifyUser, updateblog)
+router.put('/:blogId',verifyUser, updateblog)
 
 //delete blog
-router.delete('/:userId', verifyUser,  deleteblog)
+router.delete('/:blogId', verifyUser,  deleteblog)
 
 //get blog
-router.get('/:userId', verifyUser,  getblog)
+router.get('/:blogId', verifyUser,  getblog)
 
 //get all blog
 router.get('/', getblogs)

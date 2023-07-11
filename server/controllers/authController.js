@@ -54,7 +54,7 @@ const login = async (req, res, next) => {
 
 
 const logout = (req, res) => {
-   res.cookie('jwt', '', {
+   res.cookie('access_token', '', {
     httpOnly: true,
     expires: new Date(0),
   });

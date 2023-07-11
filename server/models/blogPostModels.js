@@ -7,10 +7,13 @@ const blogSchema = mongoose.Schema(
          type: String,
          required: true
       },
+      categories: {
+         type: String,
+         required: true
+      },
       content: {
          type: String,
-         required: true,
-         unique: true
+         required: true
       },
       author: {
          type: mongoose.Schema.Types.ObjectId,
